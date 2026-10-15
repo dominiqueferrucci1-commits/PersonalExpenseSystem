@@ -1,0 +1,16 @@
+# Questo è un file placeholder per il video dimostrativo
+# 
+# Istruzioni:
+# 1. Registra un video che mostra il funzionamento del programma
+# 2. Il video deve mostrare:
+#    - Avvio del programma (python src/main.py)
+#    - Navigazione del menu principale
+#    - Inserimento di una nuova categoria
+#    - Inserimento di una spesa
+#    - Definizione di un budget mensile
+#    - Generazione dei 3 report (totale per categoria, spese vs budget, elenco spese)
+#    - Gestione errori (categoria duplicata, importo negativo, categoria inesistente)
+# 3. Salva il video come demo_video.mp4 in questa cartella
+# 
+# Formato consigliato: MP4, risoluzione 1920x1080 o 1280x720
+# Durata consigliata: 2-5 minuti
