@@ -90,6 +90,24 @@ Tutti i campi dichiarano esclusivamente **tipi di dato standard SQL (SQL:2014)**
 | data_creazione | TIMESTAMP | NOT NULL, DEFAULT datetime('now') |
 | UNIQUE(mese, id_categoria) | | Un solo budget per categoria al mese |
 
+## Nota sui tipi temporali in SQLite (type affinity)
+
+Lo schema DDL usa **esclusivamente tipi di dato standard SQL:2014**. Va segnalato, per correttezza, come SQLite interpreti i tipi temporali, dato che SQLite adotta la cosiddetta **type affinity**: al posto di imporre il tipo dichiarato, assegna alla colonna un'affinità e memorizza il valore secondo la sua natura.
+
+| Colonna dichiarata | Affinità SQLite | Valore inserito | Classe di archiviazione (`typeof`) |
+|---|---|---|---|
+| `DATE` / `TIMESTAMP` | NUMERIC | `'2025-01-05'` (non convertibile in numero) | `text` |
+| `NUMERIC(10,2)` | NUMERIC | `45.5` | `real` |
+
+Questo comporta due differenze rispetto a un DBMS con tipi temporali nativi (es. PostgreSQL, MySQL), entrambe **già compensate** nel progetto:
+
+1. **Nessuna validazione automatica del calendario.** SQLite non rifiuta di per sé date come `2025-13-45`. Il progetto applica una duplice barriera:
+   - a livello SQL: il vincolo `CHECK (date(data) IS NOT NULL)` — la funzione `date()` restituisce `NULL` su date malformate, quindi il vincolo le blocca;
+   - a livello applicativo: la data viene validata in Python con `datetime.strptime` prima dell'INSERT.
+2. **Confronti e ordinamenti.** Le date sono conservate come stringhe, ma nel formato ISO 8601 (`YYYY-MM-DD`) l'ordinamento lessicografico coincide con l'ordinamento cronologico: le operazioni `ORDER BY data` e il confronto `substr(data, 1, 7) = mese` (usato nel report spese/budget) producono risultati corretti.
+
+Il vantaggio di questa scelta è la **portabilità**: lo script SQL funziona identico su un DBMS con tipi temporali reali, perché tutti i valori inseriti sono stringhe ISO 8601 e il DDL non richiede alcuna modifica. Infine, la libreria standard `sqlite3` è inclusa in ogni installazione di Python, senza dipendenze esterne.
+
 ## Esempi di Utilizzo
 
 ### Aggiungere una categoria
