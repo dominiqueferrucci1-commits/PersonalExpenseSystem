@@ -8,7 +8,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-# Per corsi relativi ai file SQL e DB
+# Percorsi dei file SQL e del database
 DB_PATH = Path(__file__).parent.parent / "sql" / "spese.db"
 SQL_SCRIPT_PATH = Path(__file__).parent.parent / "sql" / "database.sql"
 

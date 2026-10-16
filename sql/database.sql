@@ -33,7 +33,7 @@ CREATE TABLE budget_mensili (
     UNIQUE (mese, id_categoria)
 );
 
--- Indici per velocizzare le query di filtro e join
+-- Indici sulle colonne usate in filtri e join
 CREATE INDEX idx_spese_data ON spese(data);
 CREATE INDEX idx_spese_categoria ON spese(id_categoria);
 CREATE INDEX idx_budget_mese_categoria ON budget_mensili(mese, id_categoria);

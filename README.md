@@ -61,7 +61,7 @@ python src/main.py
 
 ## Database Schema
 
-Tutti i campi dichiarano esclusivamente **tipi di dato standard SQL (SQL:2014)**: `INTEGER`, `VARCHAR(n)`, `NUMERIC(precisione, scala)`, `DATE`, `TIMESTAMP`.
+Tutti i campi usano tipi di dato standard SQL: `INTEGER`, `VARCHAR(n)`, `NUMERIC(precisione, scala)`, `DATE`, `TIMESTAMP`.
 
 ### Tabella `categorie`
 | Campo | Tipo | Vincoli |
@@ -90,23 +90,21 @@ Tutti i campi dichiarano esclusivamente **tipi di dato standard SQL (SQL:2014)**
 | data_creazione | TIMESTAMP | NOT NULL, DEFAULT datetime('now') |
 | UNIQUE(mese, id_categoria) | | Un solo budget per categoria al mese |
 
-## Nota sui tipi temporali in SQLite (type affinity)
+## Nota sui tipi temporali in SQLite
 
-Lo schema DDL usa **esclusivamente tipi di dato standard SQL:2014**. Va segnalato, per correttezza, come SQLite interpreti i tipi temporali, dato che SQLite adotta la cosiddetta **type affinity**: al posto di imporre il tipo dichiarato, assegna alla colonna un'affinità e memorizza il valore secondo la sua natura.
+Lo schema usa solo tipi di dato standard SQL (`INTEGER`, `VARCHAR(n)`, `NUMERIC(p,s)`, `DATE`, `TIMESTAMP`). SQLite però gestisce i tipi in modo diverso dagli altri DBMS: applica la cosiddetta *type affinity*, cioè assegna a ogni colonna un'affinità e salva il valore in base alla sua forma, non in base al tipo dichiarato.
 
-| Colonna dichiarata | Affinità SQLite | Valore inserito | Classe di archiviazione (`typeof`) |
-|---|---|---|---|
-| `DATE` / `TIMESTAMP` | NUMERIC | `'2025-01-05'` (non convertibile in numero) | `text` |
-| `NUMERIC(10,2)` | NUMERIC | `45.5` | `real` |
+| Colonna dichiarata | Come viene salvato il valore | Esempio |
+|---|---|---|
+| `DATE` / `TIMESTAMP` | testo | `'2025-01-05'` |
+| `NUMERIC(10,2)` | numero | `45.5` |
 
-Questo comporta due differenze rispetto a un DBMS con tipi temporali nativi (es. PostgreSQL, MySQL), entrambe **già compensate** nel progetto:
+Questo comporta due differenze rispetto agli altri DBMS, entrambe già gestite nel programma:
 
-1. **Nessuna validazione automatica del calendario.** SQLite non rifiuta di per sé date come `2025-13-45`. Il progetto applica una duplice barriera:
-   - a livello SQL: il vincolo `CHECK (date(data) IS NOT NULL)` — la funzione `date()` restituisce `NULL` su date malformate, quindi il vincolo le blocca;
-   - a livello applicativo: la data viene validata in Python con `datetime.strptime` prima dell'INSERT.
-2. **Confronti e ordinamenti.** Le date sono conservate come stringhe, ma nel formato ISO 8601 (`YYYY-MM-DD`) l'ordinamento lessicografico coincide con l'ordinamento cronologico: le operazioni `ORDER BY data` e il confronto `substr(data, 1, 7) = mese` (usato nel report spese/budget) producono risultati corretti.
+1. SQLite non verifica che una data esista davvero nel calendario, quindi la validità è controllata su due livelli: il vincolo `CHECK (date(data) IS NOT NULL)` nello script SQL (la funzione `date()` restituisce NULL se la data non è valida) e il controllo con `datetime.strptime` in Python prima dell'inserimento.
+2. Le date sono salvate come stringhe, ma nel formato `YYYY-MM-DD` l'ordine alfabetico coincide con quello cronologico. Di conseguenza `ORDER BY data` e il confronto `substr(data, 1, 7) = mese` usato nel report spese/budget danno risultati corretti.
 
-Il vantaggio di questa scelta è la **portabilità**: lo script SQL funziona identico su un DBMS con tipi temporali reali, perché tutti i valori inseriti sono stringhe ISO 8601 e il DDL non richiede alcuna modifica. Infine, la libreria standard `sqlite3` è inclusa in ogni installazione di Python, senza dipendenze esterne.
+Lo script SQL resta quindi portabile: anche su un DBMS con tipi temporali propri (PostgreSQL, MySQL) struttura e INSERT funzionano senza modifiche.
 
 ## Esempi di Utilizzo
 
