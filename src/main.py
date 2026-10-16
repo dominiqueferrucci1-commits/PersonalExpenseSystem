@@ -316,12 +316,10 @@ def main():
     if not DB_PATH.exists():
         init_database()
 
-    print("\n-------------------------")
-    print("SISTEMA SPESE PERSONALI")
-    print("-------------------------")
+    print("\nBenvenuto nel Sistema di Gestione delle Spese Personali e del Budget")
 
     while True:
-        print("\n--- MENU PRINCIPALE ---")
+        print("\n------------------------- SISTEMA SPESE PERSONALI -------------------------")
         print("1. Gestione Categorie")
         print("2. Inserisci Spesa")
         print("3. Definisci Budget Mensile")

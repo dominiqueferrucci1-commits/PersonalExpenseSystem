@@ -4,30 +4,31 @@ Applicazione console in Python per la gestione personale di spese, categorie e b
 
 ## Requisiti
 
-- **Python 3.8+** (testato su Python 3.10+)
+- **Python 3.10+** (necessario per lo statement `match`; testato su Python 3.11)
 - **Libreria standard `sqlite3`** (inclusa in Python, nessuna installazione aggiuntiva richiesta)
 - Sistema operativo: Windows, Linux, macOS
 
 ## Struttura del Progetto
 
 ```
-elaborato_uni/
+PersonalExpenseSystem/
 ├── src/
 │   └── main.py              # Codice sorgente principale
 ├── sql/
 │   ├── database.sql         # Script SQL per creazione tabelle e dati di esempio
 │   └── spese.db             # Database SQLite (creato automaticamente al primo avvio)
 ├── demo/
-│   └── demo_video.mp4       # Placeholder per video dimostrativo
+│   └── demo_video.mp4       # Video dimostrativo del funzionamento
 └── README.md                # Questo file
 ```
 
 ## Installazione e Avvio
 
-### 1. Clona o scarica il repository
+### 1. Clona il repository
 
 ```bash
-cd elaborato_uni
+git clone https://github.com/dominiqueferrucci1-commits/PersonalExpenseSystem.git
+cd PersonalExpenseSystem
 ```
 
 ### 2. Esegui il programma
