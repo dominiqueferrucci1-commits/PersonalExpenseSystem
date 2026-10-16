@@ -61,31 +61,33 @@ python src/main.py
 
 ## Database Schema
 
+Tutti i campi dichiarano esclusivamente **tipi di dato standard SQL (SQL:2014)**: `INTEGER`, `VARCHAR(n)`, `NUMERIC(precisione, scala)`, `DATE`, `TIMESTAMP`.
+
 ### Tabella `categorie`
 | Campo | Tipo | Vincoli |
 |-------|------|---------|
 | id_categoria | INTEGER | PRIMARY KEY, AUTOINCREMENT |
-| nome | TEXT | NOT NULL, UNIQUE, CHECK (non vuoto) |
-| data_creazione | TEXT | NOT NULL, DEFAULT date('now') |
+| nome | VARCHAR(100) | NOT NULL, UNIQUE, CHECK (non vuoto) |
+| data_creazione | DATE | NOT NULL, DEFAULT date('now') |
 
 ### Tabella `spese`
 | Campo | Tipo | Vincoli |
 |-------|------|---------|
 | id_spesa | INTEGER | PRIMARY KEY, AUTOINCREMENT |
-| data | TEXT | NOT NULL, CHECK (formato data valido) |
-| importo | REAL | NOT NULL, CHECK (> 0) |
+| data | DATE | NOT NULL, CHECK (formato data valido) |
+| importo | NUMERIC(10,2) | NOT NULL, CHECK (> 0) |
 | id_categoria | INTEGER | NOT NULL, FOREIGN KEY → categorie.id_categoria |
-| descrizione | TEXT | NULLABLE |
-| data_inserimento | TEXT | NOT NULL, DEFAULT datetime('now') |
+| descrizione | VARCHAR(200) | NULLABLE |
+| data_inserimento | TIMESTAMP | NOT NULL, DEFAULT datetime('now') |
 
 ### Tabella `budget_mensili`
 | Campo | Tipo | Vincoli |
 |-------|------|---------|
 | id_budget | INTEGER | PRIMARY KEY, AUTOINCREMENT |
-| mese | TEXT | NOT NULL, CHECK (formato YYYY-MM valido) |
+| mese | VARCHAR(7) | NOT NULL, CHECK (formato YYYY-MM valido) |
 | id_categoria | INTEGER | NOT NULL, FOREIGN KEY → categorie.id_categoria |
-| importo_budget | REAL | NOT NULL, CHECK (> 0) |
-| data_creazione | TEXT | NOT NULL, DEFAULT datetime('now') |
+| importo_budget | NUMERIC(10,2) | NOT NULL, CHECK (> 0) |
+| data_creazione | TIMESTAMP | NOT NULL, DEFAULT datetime('now') |
 | UNIQUE(mese, id_categoria) | | Un solo budget per categoria al mese |
 
 ## Esempi di Utilizzo

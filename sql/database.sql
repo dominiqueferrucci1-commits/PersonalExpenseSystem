@@ -7,28 +7,28 @@ DROP TABLE IF EXISTS categorie;
 -- Categorie spese
 CREATE TABLE categorie (
     id_categoria     INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome             TEXT NOT NULL UNIQUE CHECK (length(trim(nome)) > 0),
-    data_creazione   TEXT NOT NULL DEFAULT (date('now'))
+    nome             VARCHAR(100) NOT NULL UNIQUE CHECK (length(trim(nome)) > 0),
+    data_creazione   DATE NOT NULL DEFAULT (date('now'))
 );
 
 -- Spese registrate
 CREATE TABLE spese (
     id_spesa         INTEGER PRIMARY KEY AUTOINCREMENT,
-    data             TEXT NOT NULL CHECK (date(data) IS NOT NULL),
-    importo          REAL NOT NULL CHECK (importo > 0),
+    data             DATE NOT NULL CHECK (date(data) IS NOT NULL),
+    importo          NUMERIC(10,2) NOT NULL CHECK (importo > 0),
     id_categoria     INTEGER NOT NULL,
-    descrizione      TEXT,
-    data_inserimento TEXT NOT NULL DEFAULT (datetime('now')),
+    descrizione      VARCHAR(200),
+    data_inserimento TIMESTAMP NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY (id_categoria) REFERENCES categorie(id_categoria) ON DELETE RESTRICT
 );
 
 -- Budget mensile per categoria
 CREATE TABLE budget_mensili (
     id_budget        INTEGER PRIMARY KEY AUTOINCREMENT,
-    mese             TEXT NOT NULL CHECK (substr(mese, 1, 4) BETWEEN '2000' AND '2100' AND substr(mese, 6, 2) BETWEEN '01' AND '12'),
+    mese             VARCHAR(7) NOT NULL CHECK (substr(mese, 1, 4) BETWEEN '2000' AND '2100' AND substr(mese, 6, 2) BETWEEN '01' AND '12'),
     id_categoria     INTEGER NOT NULL,
-    importo_budget   REAL NOT NULL CHECK (importo_budget > 0),
-    data_creazione   TEXT NOT NULL DEFAULT (datetime('now')),
+    importo_budget   NUMERIC(10,2) NOT NULL CHECK (importo_budget > 0),
+    data_creazione   TIMESTAMP NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY (id_categoria) REFERENCES categorie(id_categoria) ON DELETE RESTRICT,
     UNIQUE (mese, id_categoria)
 );
